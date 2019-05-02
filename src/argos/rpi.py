@@ -15,7 +15,8 @@ def sampling(channel=0, seconds=1, freq_hz=1000, max_speed_hz=1350000, retry=30,
         begin = datetime.now()
         samples = []
         while (datetime.now() - begin).total_seconds() <= seconds:
-            samples.append(spi.xfer2([1, (0x08+channel)<<4, 0]))
+            r = spi.xfer2([1, (0x08+channel)<<4, 0])
+            samples.append(((r[1]&0x03)<<8) + r[2])
             if s > 0:
                 time.sleep(s)
         return samples
